@@ -224,12 +224,19 @@ open class SpannedGridLayoutManager(val orientation: Orientation,
 
         // Restore scroll position based on first visible view
         val pendingScrollToPosition = pendingScrollToPosition
-        if (itemCount != 0 && pendingScrollToPosition != null && pendingScrollToPosition >= spans) {
+        if (itemCount != 0 && pendingScrollToPosition != null) {
 
             val currentRow = rectsHelper.rows.filter { (_, value) -> value.contains(pendingScrollToPosition) }.keys.firstOrNull()
 
             if (currentRow != null) {
                 scroll = getPaddingStartForOrientation() + (currentRow * rectsHelper.itemSize)
+                layoutEnd = if (scroll != 0) {
+                    val updatedRow = (scroll - layoutStart) / rectsHelper.itemSize
+                    updatedRow * rectsHelper.itemSize
+                } else {
+                    getPaddingEndForOrientation()
+                }
+
             }
 
             this.pendingScrollToPosition = null
